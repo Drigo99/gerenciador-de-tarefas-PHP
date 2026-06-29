@@ -1,0 +1,25 @@
+<?php
+
+class Database {
+    private $host = "localhost";
+    private $db_name = "gerenciador_tarefas";
+    private $username = "root";
+    private $password = ""; // No XAMPP a senha padrão é vazia
+    public $conn;
+
+    public function getConnection() {
+        $this->conn = null;
+
+        try {
+            $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
+            // Configura o PDO para lançar exceções em caso de erro
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            // Garante que os caracteres acentuados funcionem perfeitamente
+            $this->conn->exec("set names utf8");
+        } catch(PDOException $exception) {
+            echo "Erro de conexão: " . $exception->getMessage();
+        }
+
+        return $this->conn;
+    }
+}
