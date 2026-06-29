@@ -13,8 +13,8 @@
             <div class="col-md-10">
                 
                 <div class="text-center mb-4">
-                    <h1 class="display-5 fw-bold text-primary">📝 Meu Gerenciador de Tarefas</h1>
-                    <p class="text-muted">Organize seu dia a dia de forma simples</p>
+                    <h1 class="display-5 fw-bold text-primary">📝 Gerenciador de Tarefas Pessoal</h1>
+                    <p class="text-muted">Organize seu dia a dia.</p>
                 </div>
 
                 <div class="card shadow-sm mb-4">
@@ -26,7 +26,7 @@
                                     <input type="text" name="titulo" id="titulo" class="form-control" placeholder="Título da tarefa..." required>
                                 </div>
                                 <div class="col-md-6">
-                                    <input type="text" name="descricao" id="descricao" class="form-control" placeholder="Descrição curta (opcional)...">
+                                    <input type="text" name="descricao" id="descricao" class="form-control" placeholder="Descrição curta (opcional)">
                                 </div>
                                 <div class="col-md-2">
                                     <button type="submit" class="btn btn-primary w-100">Adicionar</button>
@@ -51,26 +51,46 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td><strong>Estudar PHP</strong></td>
-                                        <td class="text-muted">Revisar o padrão MVC e fazer o commit</td>
-                                        <td><span class="badge bg-warning text-dark">Pendente</span></td>
-                                        <td>
-                                            <a href="#" class="btn btn-sm btn-success">✓</a>
-                                            <a href="#" class="btn btn-sm btn-danger">🗙</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td><del class="text-muted">Criar banco de dados</del></td>
-                                        <td class="text-muted"><del>Rodar o script SQL no phpMyAdmin</del></td>
-                                        <td><span class="badge bg-success">Concluída</span></td>
-                                        <td>
-                                            <a href="#" class="btn btn-sm btn-secondary disabled">✓</a>
-                                            <a href="#" class="btn btn-sm btn-danger">🗙</a>
-                                        </td>
-                                    </tr>
+                                    <?php if (empty($tarefas)): ?>
+    <tr>
+        <td colspan="5" class="text-center text-muted">Nenhuma tarefa cadastrada por enquanto. Comece adicionando uma acima!</td>
+    </tr>
+<?php else: ?>
+    <?php foreach ($tarefas as $index => $tarefa): ?>
+        <tr>
+            <td><?= $index + 1 ?></td>
+            <td>
+                <?php if ($tarefa['status'] === 'concluida'): ?>
+                    <del class="text-muted"><?= htmlspecialchars($tarefa['titulo']) ?></del>
+                <?php else: ?>
+                    <strong><?= htmlspecialchars($tarefa['titulo']) ?></strong>
+                <?php endif; ?>
+            </td>
+            <td class="text-muted">
+                <?php if ($tarefa['status'] === 'concluida'): ?>
+                    <del><?= htmlspecialchars($tarefa['descricao']) ?></del>
+                <?php else: ?>
+                    <?= htmlspecialchars($tarefa['descricao']) ?>
+                <?php endif; ?>
+            </td>
+            <td>
+                <?php if ($tarefa['status'] === 'concluida'): ?>
+                    <span class="badge bg-success">Concluída</span>
+                <?php else: ?>
+                    <span class="badge bg-warning text-dark">Pendente</span>
+                <?php endif; ?>
+            </td>
+            <td>
+                <?php if ($tarefa['status'] === 'pendente'): ?>
+                    <a href="index.php?action=concluir&id=<?= $tarefa['id'] ?>" class="btn btn-sm btn-success" title="Concluir tarefa">✓</a>
+                <?php else: ?>
+                    <button class="btn btn-sm btn-secondary" disabled>✓</button>
+                <?php endif; ?>
+                <a href="index.php?action=deletar&id=<?= $tarefa['id'] ?>" class="btn btn-sm btn-danger" title="Excluir tarefa" onclick="return confirm('Tem certeza que deseja excluir esta tarefa?')">🗙</a>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+<?php endif; ?>
                                 </tbody>
                             </table>
                         </div>
